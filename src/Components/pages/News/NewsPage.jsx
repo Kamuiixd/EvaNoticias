@@ -1,109 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Paper, IconButton, Typography, MobileStepper } from '@mui/material';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
+import React from 'react';
+import { Box, Typography, useTheme } from '@mui/material';
+import { Link } from 'react-router-dom';
+import NewsCarousel from './NewsCarousel'; // Componente carrusel
 
-const NewsCarousel = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [items, setItems] = useState([]);
+// Lista de categorías
+const categories = [
+  { name: 'Negocios', path: 'business' },
+  { name: 'Entretenimiento', path: 'entertainment' },
+  { name: 'Salud', path: 'health' },
+  { name: 'Ciencia', path: 'science' },
+  { name: 'Deportes', path: 'sports' },
+  { name: 'Tecnología', path: 'technology' },
+];
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await fetch(
-          `https://newsapi.org/v2/top-headlines?country=us&apiKey=84aaa44ac13c4af4ae63cf45fcd788ad`
-        );
-        const data = await response.json();
-        if (data.articles) {
-          const filteredArticles = data.articles
-            .filter((article) => article.urlToImage) // Filtrar noticias con imágenes
-            .slice(0, 5); // Limitar a 5 noticias
-          setItems(
-            filteredArticles.map((article) => ({
-              label: article.title,
-              description: article.description,
-              imgPath: article.urlToImage,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error('Error al obtener noticias:', error);
-      }
-    };
-
-    fetchNews();
-  }, []);
-
-  const maxSteps = items.length;
-
-  const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
-
-  if (items.length === 0) {
-    return (
-      <Box sx={{ textAlign: 'center', mt: 5 }}>
-        <Typography variant="h6">Cargando noticias...</Typography>
-      </Box>
-    );
-  }
+function NewsPage() {
+  const theme = useTheme();
 
   return (
-    <Box sx={{ maxWidth: 800, flexGrow: 1, margin: 'auto' }}>
-      <Paper
-        square
-        elevation={3}
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        minHeight: '100vh',
+        padding: { xs: 2, md: 4 },
+      }}
+    >
+      {/* Título de la página */}
+      <Typography
+        variant="h4"
+        gutterBottom
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          p: 2,
-          bgcolor: 'background.default',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          color: theme.palette.text.primary,
+          marginBottom: 4,
         }}
       >
-        <img
-          src={items[activeStep].imgPath}
-          alt={items[activeStep].label}
-          style={{
-            height: 400,
-            width: '100%',
-            objectFit: 'cover',
-            display: 'block',
-            overflow: 'hidden',
+      </Typography>
+
+      {/* Categorías */}
+      <Box sx={{ textAlign: 'center', marginBottom: 4 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 'bold',
+            color: theme.palette.text.secondary,
+            marginBottom: 2,
           }}
-        />
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            {items[activeStep].label}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {items[activeStep].description}
-          </Typography>
+        >
+        </Typography>
+        <Box
+          sx={{
+            display: 'inline-flex',
+            gap: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          {categories.map((category, index) => (
+            <React.Fragment key={category.path}>
+              <Link
+                to={`/category/${category.path}`}
+                style={{
+                  textDecoration: 'none',
+                  color: theme.palette.primary.main,
+                  fontWeight: 'bold',
+                  margin: '0 8px',
+                }}
+              >
+                {category.name}
+              </Link>
+              {index < categories.length - 1 && (
+                <Typography
+                  component="span"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    margin: '0 8px',
+                  }}
+                >
+                  -
+                </Typography>
+              )}
+            </React.Fragment>
+          ))}
         </Box>
-        <MobileStepper
-          steps={maxSteps}
-          position="static"
-          activeStep={activeStep}
-          nextButton={
-            <IconButton
-              onClick={handleNext}
-              disabled={activeStep === maxSteps - 1}
-            >
-              <KeyboardArrowRight />
-            </IconButton>
-          }
-          backButton={
-            <IconButton onClick={handleBack} disabled={activeStep === 0}>
-              <KeyboardArrowLeft />
-            </IconButton>
-          }
-        />
-      </Paper>
+      </Box>
+
+      {/* Espaciado entre categorías y carrusel */}
+      <Box sx={{ marginTop: 6, marginBottom: 4 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: theme.palette.text.primary,
+          }}
+        >
+          Noticias Destacadas
+        </Typography>
+      </Box>
+
+      {/* Carrusel */}
+      <Box sx={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <NewsCarousel />
+      </Box>
     </Box>
   );
-};
+}
 
-export default NewsCarousel;
+export default NewsPage;

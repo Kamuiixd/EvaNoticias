@@ -1,23 +1,53 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Establecer el fondo de toda la página con un color diferente al negro */
+body {
+  background-color: #f5f5f5; /* Color de fondo claro (puedes cambiarlo por el color que prefieras) */
+  margin: 0;
+  padding: 0;
+  width: 100%; /* Asegúrate de que ocupe todo el ancho de la pantalla */
+  min-height: 100vh; /* Asegura que el fondo ocupe toda la altura de la ventana */
+  display: flex;
+  flex-direction: column;
 }
 
+/* Header con estilo */
+header {
+  background-color: #00796b; /* Cambia el color de fondo del header */
+  width: 100%; /* Asegura que el header ocupe todo el ancho */
+  position: fixed; /* Fija el header en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Asegura que el header esté siempre encima del contenido */
+  padding: 1rem 0;
+}
+
+/* Asegúrate de que el contenido principal no quede debajo del header */
+#root {
+  margin-top: 4rem; /* Este valor debe ser mayor o igual a la altura del header */
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  background-color: #ffffff; /* Fondo blanco para la parte del contenido */
+  box-sizing: border-box; /* Para asegurar que los padding no afecten al tamaño total */
+  flex-grow: 1; /* Para que el contenido ocupe el espacio restante */
+}
+
+/* Estilo para el logo */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Animación para el logo */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -33,10 +63,12 @@
   }
 }
 
+/* Estilo para las tarjetas */
 .card {
   padding: 2em;
 }
 
+/* Estilo para el texto "read-the-docs" */
 .read-the-docs {
   color: #888;
 }

@@ -1,18 +1,23 @@
 import React, { createContext, useState, useContext } from 'react';
 
-// Crear el contexto para el estado de búsqueda
+// Creamos el contexto para la búsqueda
 const SearchContext = createContext();
 
-// Proveedor para el contexto de búsqueda
+// Componente proveedor para envolver la aplicación y proporcionar el contexto de búsqueda
 export const SearchProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Función para actualizar la consulta de búsqueda
+  const updateSearchQuery = (query) => {
+    setSearchQuery(query);
+  };
+
   return (
-    <SearchContext.Provider value={{ searchQuery, setSearchQuery }}>
+    <SearchContext.Provider value={{ searchQuery, updateSearchQuery }}>
       {children}
     </SearchContext.Provider>
   );
 };
 
-// Custom Hook para usar el contexto
+// Hook para acceder fácilmente al contexto de búsqueda
 export const useSearch = () => useContext(SearchContext);

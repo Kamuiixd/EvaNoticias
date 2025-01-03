@@ -1,30 +1,16 @@
 import React, { useState } from 'react';
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Typography,
-  Menu,
-  Container,
-  Avatar,
-  Button,
-  Tooltip,
-  MenuItem,
-  InputBase,
-  useTheme,
-  ThemeProvider,
-  createTheme,
-} from '@mui/material';
-import { Menu as MenuIcon, Search as SearchIcon } from '@mui/icons-material';
-import AdbIcon from '@mui/icons-material/Adb';
-
-const settings = ['Profile', 'Change Theme', 'Logout'];
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, InputBase, useTheme, ThemeProvider, createTheme } from '@mui/material';
+import { Search as SearchIcon } from '@mui/icons-material';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../../LogIn/UserContext'; // Importar useUser
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 
 function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { user, logout } = useUser();
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const darkTheme = createTheme({
@@ -33,16 +19,8 @@ function ResponsiveAppBar() {
     },
   });
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -53,35 +31,69 @@ function ResponsiveAppBar() {
     setIsDarkMode((prevMode) => !prevMode);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const userData = JSON.parse(localStorage.getItem('user')) || null;
+  const userName = userData ? userData.username : 'Usuario';
+
   return (
     <ThemeProvider theme={darkTheme}>
-      <AppBar position="static">
+      {/* AppBar con fondo y opciones, ocupa todo el ancho */}
+      <AppBar position="fixed" sx={{ backgroundColor: '#666f88' }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            {/* NoticiasMui */}
-            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            {/* Logo y Nombre */}
+            <NewspaperIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} fontSize="large" />
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
+              component={Link}
+              to="/home"
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                letterSpacing: '.3rem',
+                letterSpacing: '.2rem',
                 color: 'inherit',
                 textDecoration: 'none',
               }}
             >
-              NoticiasMui
+              Noticias
             </Typography>
 
-            {/* Espaciador para empujar elementos hacia la derecha */}
-            <Box sx={{ flexGrow: 1 }} />
+            {/* Barra de Navegación */}
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Button
+                component={Link}
+                to="/home"
+                sx={{ color: 'white', marginRight: 2 }}
+              >
+                Inicio
+              </Button>
+              <Button
+                component={Link}
+                to="/favorites"
+                sx={{ color: 'white', marginRight: 2 }}
+              >
+                Favoritos
+              </Button>
+            </Box>
 
-            {/* Buscador */}
+            {/* Barra de Búsqueda */}
             <Box
               sx={{
                 display: 'flex',
@@ -90,67 +102,66 @@ function ResponsiveAppBar() {
                 borderRadius: 1,
                 paddingX: 1,
                 marginRight: 2,
-                width: '300px',
+                width: { xs: '200px', md: '300px' },
               }}
             >
-              <SearchIcon />
+              <SearchIcon onClick={handleSearchSubmit} sx={{ cursor: 'pointer', color: '#757de8' }} />
               <InputBase
-                placeholder="Search…"
+                placeholder="Buscar..."
+                value={searchQuery}
+                onChange={handleSearchChange}
                 sx={{ ml: 1, flex: 1 }}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Box>
 
-            {/* Botón Login */}
-            <Button
-              sx={{
-                my: 2,
-                color: 'white',
-                display: 'block',
-                marginRight: 2,
-              }}
-            >
-              Login
-            </Button>
-
-            {/* Avatar y menú de usuario */}
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => {
-                      handleCloseUserMenu();
-                      if (setting === 'Change Theme') {
-                        handleThemeChange();
-                      }
-                    }}
-                  >
-                    <Typography textAlign="center">{setting}</Typography>
+            {/* Opciones del Usuario */}
+            {user ? (
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography variant="body1" sx={{ color: 'white', marginRight: 2 }}>
+                  {userName}
+                </Typography>
+                <Tooltip title="Abrir configuración">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem onClick={() => navigate('/profile')}>
+                    <Typography textAlign="center">Perfil</Typography>
                   </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+                  <MenuItem onClick={handleThemeChange}>
+                    <Typography textAlign="center">Cambiar Tema</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <Typography textAlign="center">Cerrar Sesión</Typography>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              <Button
+                component={Link}
+                to="/login"
+                sx={{ color: 'white' }}
+              >
+                Iniciar Sesión
+              </Button>
+            )}
           </Toolbar>
         </Container>
       </AppBar>
