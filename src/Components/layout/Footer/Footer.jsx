@@ -7,7 +7,7 @@
       <Box
         component="footer"
         sx={{
-          backgroundColor: "#666f88",
+          background: 'linear-gradient(135deg,rgb(167, 147, 147),rgb(93, 189, 192))',
           color: "#fff",
           padding: "40px 0",
           mt: "auto",

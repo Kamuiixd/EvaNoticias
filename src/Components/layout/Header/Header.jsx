@@ -52,7 +52,7 @@ function ResponsiveAppBar() {
   return (
     <ThemeProvider theme={darkTheme}>
       {/* AppBar con fondo y opciones, ocupa todo el ancho */}
-      <AppBar position="fixed" sx={{ backgroundColor: '#666f88' }}>
+      <AppBar position="fixed" sx={{ background: 'linear-gradient(135deg,rgb(167, 147, 147),rgb(93, 189, 192))', }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             {/* Logo y Nombre */}
