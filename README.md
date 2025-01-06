@@ -10,14 +10,14 @@ git clone <URL_DEL_REPOSITORIO>
 
 
 
-Instala las dependencias con npm:
+#Instala las dependencias con npm:
 npm install
 
 
 
 
 
-Hooks Utilizados
+#Hooks Utilizados
 useState: Permite añadir el estado local dentro de los componentes funcionales de React.
 Uso en el proyecto: Se utiliza para manejar estados como los resultados de búsqueda, la carga de noticias, y la página actual de noticias.
 
@@ -37,7 +37,7 @@ Uso en el proyecto: Se utiliza para guardar, eliminar y comprobar si una noticia
 
 
 
-Cómo Ejecutar el Proyecto
+#Cómo Ejecutar el Proyecto
 npm run dev
 
 
@@ -45,8 +45,8 @@ npm run dev
 
 
 
-Resumen de Funcionalidades Implementadas
-Visualización de Noticias:
+#Funcionalidades Implementadas
+##Visualización de Noticias:
 
 Las noticias se muestran en tarjetas dentro de una página específica para cada categoría. Las categorías incluyen tecnología, deportes, salud, política, y más.
 La aplicación permite la visualización de artículos de noticias con un enlace a su fuente original.
