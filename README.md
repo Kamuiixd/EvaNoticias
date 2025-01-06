@@ -5,7 +5,6 @@ Este proyecto es una aplicación web para mostrar noticias de diferentes categor
 ## Instalación de Dependencias
 
 1. Clona este repositorio en tu máquina local:
-   ```bash
 git clone <URL_DEL_REPOSITORIO>
 
 
